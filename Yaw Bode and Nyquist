@@ -1,0 +1,36 @@
+clc
+s = tf('s')
+[G1,G3] = generatePlantModels('9209046')
+G1, G3
+G2=G1, G4=G3
+PID = tf([1],[1])
+F = tf([1024],[1 1024])
+
+
+
+
+%ts = (G2+G4)+(PID*(G1+G2+G3+G4))/(1+F*PID*(G1+G2+G3+G4))
+
+Gsiso_yaw = (PID*(G1+G2+G3+G4)+G4)
+
+H_yaw = (F*PID*(G1+G2+G3+G4))/((PID*(G1+G2+G3+G4))+G4)
+
+GH = Gsiso_yaw*H_yaw
+%open loop
+
+Kc2 = Kc*0.4
+
+margin(GH)
+
+stepinfo(feedback(Gsiso_yaw,H_yaw))
+
+nyquist (GH);
+
+
+
+x=feedback(G,H)
+step(feedback(G,H))
+stepinfo(feedback(G,H))
+stepinfo(feedback(G*Kc2,H))
+step(feedback(G*Kc2,H))
+stepinfo(feedback(G*Kc2,H))
