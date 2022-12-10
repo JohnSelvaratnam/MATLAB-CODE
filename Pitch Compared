@@ -1,0 +1,34 @@
+s = tf('s')
+[G1,G3] = generatePlantModels('9209046')
+G1, G3
+G2=G1, G4=G3
+PID = tf([1],[1])
+F = tf([1024],[1 1024])
+
+
+
+
+%ts = (G2+G4)+(PID*(G1+G2+G3+G4))/(1+F*PID*(G1+G2+G3+G4))
+
+G = (PID*(G1+G2+G3+G4)+G3)
+
+H = (F*PID*(G1+G2+G3+G4))/((PID*(G1+G2+G3+G4))+G3)
+
+GH = G*H %open loop
+
+Kc2 = Kc
+
+margin(GH)
+
+pzmap (ts)
+
+step(feedback(G,H))
+stepinfo(feedback(G,H))
+hold on
+step(feedback(G*Kc2,H))
+stepinfo(feedback(G*Kc2,H))
+hold off
+nyquist(GH)
+hold on
+nyquist(GH*Kc)
+hold off
