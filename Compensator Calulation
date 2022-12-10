@@ -1,0 +1,21 @@
+syms alpha
+
+eqn = (alpha - 1)/(alpha + 1) == sind(44)
+
+%44 due to 60-20=40 then add 10% leeway
+
+sols = double(solve(eqn,alpha))
+
+% find omega c manually 
+
+% -10log 5.5=-7.4(y on bode)
+
+%Omega c = 29.41(x on bode )
+
+omega_c=29.41
+
+a = double(sols)
+p = omega_c*sqrt(a)
+z = p/double(sols)
+
+Kc=zpk([-z],[-p],a)
